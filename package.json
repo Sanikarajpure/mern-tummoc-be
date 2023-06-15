@@ -1,0 +1,38 @@
+{
+  "name": "mern-tummoc-be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sanikarajpure/mern-tummoc-be.git"
+  },
+  "author": "sanika",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sanikarajpure/mern-tummoc-be/issues"
+  },
+  "homepage": "https://github.com/Sanikarajpure/mern-tummoc-be#readme",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "axios": "^1.4.0",
+    "bcrypt": "^5.1.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.1.4",
+    "express": "^4.18.2",
+    "express-formidable": "^1.2.0",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-validator": "^7.0.1",
+    "http-status": "^1.6.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.3.0",
+    "nodemon": "^2.0.22",
+    "validator": "^13.9.0",
+    "xss-clean": "^0.1.4"
+  }
+}
