@@ -7,6 +7,12 @@ const stringPassswordError = new Error(
 
 const phoneError = new Error("Enter a 10 digit valid Phone number");
 
+const citySchema = Joi.object({
+  name: Joi.string().required(),
+  type: Joi.string(),
+  state: Joi.string().required(),
+});
+
 const registerSchema = Joi.object({
   email: Joi.string().email().max(225).required(),
   password: Joi.string()
@@ -21,6 +27,7 @@ const registerSchema = Joi.object({
     .regex(CONSTANTS.APP_VALIDATIONS.phoneRegex)
     .error(phoneError)
     .required(),
+  city: citySchema,
 });
 
 const loginSchema = Joi.object({

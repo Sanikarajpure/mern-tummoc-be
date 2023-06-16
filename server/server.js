@@ -15,9 +15,9 @@ const http = require("http");
 const server = http.createServer(app);
 
 //MongoDb Connection
-//const mongoUri = `mongodb+srv://${process.env.DB_ADMIN}:${process.env.DB_PASS}@${process.env.DB_HOST}?retryWrites=true&w=majority`;
+const mongoUri = `mongodb+srv://${process.env.DB_ADMIN}:${process.env.DB_PASS}@${process.env.DB_HOST}?retryWrites=true&w=majority`;
 
-//mongoose.connect(mongoUri);
+mongoose.connect(mongoUri);
 
 //CORS
 app.use(cors());

@@ -4,6 +4,20 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 
+const citySchema = mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  type: { type: String, default: "Non-Metro" },
+  state: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+});
+
 const userSchema = mongoose.Schema(
   {
     email: {
@@ -36,12 +50,7 @@ const userSchema = mongoose.Schema(
       trim: true,
       unique: true,
     },
-    friends: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+    city: [citySchema],
   },
   { timestamps: true }
 );

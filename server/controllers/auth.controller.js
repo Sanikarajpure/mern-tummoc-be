@@ -13,8 +13,10 @@ const authController = {
     try {
       //validating using joi
 
-      let value = await registerSchema.validateAsync(req.body);
+      //console.log(req.body);
 
+      let value = await registerSchema.validateAsync(req.body);
+      console.log(value);
       if (value) {
         //chechking if email is taken
         if (await User.emailTaken(value.email)) {
@@ -26,7 +28,8 @@ const authController = {
           value.password,
           value.firstName,
           value.lastName,
-          value.phone
+          value.phone,
+          value.city
         );
 
         res.status(httpStatus.CREATED).send({
