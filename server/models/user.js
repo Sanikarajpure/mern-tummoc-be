@@ -7,13 +7,13 @@ const bcrypt = require("bcrypt");
 const citySchema = mongoose.Schema({
   name: {
     type: String,
-    required: true,
+
     trim: true,
   },
   type: { type: String, default: "Non-Metro" },
   state: {
     type: String,
-    required: true,
+
     trim: true,
   },
 });
@@ -45,7 +45,7 @@ const userSchema = mongoose.Schema(
 
     phone: {
       type: String,
-      required: true,
+
       maxLength: 12,
       trim: true,
       unique: true,
