@@ -1,5 +1,6 @@
 const express = require("express");
 const authRoute = require("./auth.route");
+const fileRoute = require("./file.route");
 
 const router = express.Router();
 
@@ -7,6 +8,10 @@ const routesIndex = [
   {
     path: "/auth",
     route: authRoute,
+  },
+  {
+    path: "/file",
+    route: fileRoute,
   },
 ];
 

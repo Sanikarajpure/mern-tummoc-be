@@ -13,7 +13,7 @@ const authController = {
   async register(req, res, next) {
     try {
       //validating using joi
-      console.log(req.body);
+
       let value = await registerSchema.validateAsync(req.body);
 
       if (value) {
@@ -21,7 +21,6 @@ const authController = {
         if (await User.emailTaken(value.email)) {
           throw new ApiError(httpStatus.BAD_REQUEST, "User already exists!");
         }
-        console.log(value);
 
         let user = await authService.createUser(
           value.email,
