@@ -1,44 +1,97 @@
 const { ApiError } = require("../middlewares/apiError");
-const { User } = require("../models/user");
-const { authService, userService } = require("../services/");
-const {
-  registerSchema,
-  loginSchema,
-} = require("../validations/regitserLoginValidations");
 const httpStatus = require("http-status");
 const jwt = require("jsonwebtoken");
+const {
+  fileValidationSchema,
+  getAllFilesValidationSchema,
+} = require("../validations/fileValidation");
+const { s3Client, generateFileName } = require("../config/s3config");
+const { userService } = require("../services/");
+const { PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 require("dotenv").config();
 
-const fs = require("fs");
-(path = require("path")), (filePath = path.join(__dirname, "words.txt"));
+const bucketName = process.env.S3_BUCKET;
 
 const fileController = {
-  async readFile(req, res, next) {
+  async getAllFiles(req, res, next) {
     try {
-      const data = fs.readFileSync(filePath, { encoding: "utf-8" });
-      console.log(data);
+      const values = await getAllFilesValidationSchema.validateAsync({
+        id: req.query.id,
+      });
 
-      res.status(httpStatus.OK).send(data);
+      let result = [];
+
+      const user = await userService.findUserById({ _id: values.id });
+      if (user) {
+        for (let i = 0; i < user.files.length; i++) {
+          let getObjectParams = {
+            Bucket: bucketName,
+            Key: user.files[i],
+          };
+
+          const command = new GetObjectCommand(getObjectParams);
+
+          const url = await getSignedUrl(s3Client, command, {
+            expiresIn: 3600,
+          });
+
+          let file = {
+            fileName: user.files[i],
+            url: url,
+          };
+
+          result.push(file);
+        }
+
+        res.send({
+          status: httpStatus.FOUND,
+          result,
+        });
+      } else {
+        res.send({
+          status: httpStatus.NOT_FOUND,
+          result,
+        });
+      }
     } catch (error) {
       next(error);
     }
   },
 
-  async writeToFile(req, res, next) {
+  async uploadFile(req, res, next) {
     try {
-      const text = req.body.text;
+      const values = await fileValidationSchema.validateAsync({
+        id: req.body.id,
+        file: req.file,
+      });
 
-      let data = fs.readFileSync(filePath, { encoding: "utf-8" });
+      let file = `${generateFileName(values.file.originalname)}`;
 
-      if (!data) {
-        fs.writeFileSync(filePath, text);
-      } else {
-        fs.appendFileSync(filePath, text);
-      }
+      const uploadParams = {
+        Bucket: bucketName,
+        Body: values.file.buffer,
+        Key: file,
+        ContentType: values.file.mimetype,
+      };
 
-      data = fs.readFileSync(filePath, { encoding: "utf-8" });
+      // Send the upload to S3
+      await s3Client.send(new PutObjectCommand(uploadParams));
 
-      res.status(httpStatus.OK).send(data);
+      const user = await userService.findAndUpdateUser(
+        {
+          _id: values.id,
+        },
+        {
+          $push: { files: file },
+        },
+        { upsert: true }
+      );
+
+      res.send({
+        status: httpStatus.OK,
+        message: "File uploaded sucessfully",
+      });
     } catch (error) {
       next(error);
     }

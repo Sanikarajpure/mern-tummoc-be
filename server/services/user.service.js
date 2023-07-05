@@ -10,12 +10,12 @@ const validateToken = async (token) => {
 };
 
 const decodeToken = async (token) => {};
-const findUserByEmail = (email) => {
-  return User.findOne({ email });
+const findUserByEmail = async (email) => {
+  return await User.findOne({ email });
 };
 
-const findUserById = async (_id) => {
-  return User.findById({ _id });
+const findUserById = async (id) => {
+  return await User.findById(id);
 };
 
 const getGoogleOAuthTokens = async ({ code }) => {
